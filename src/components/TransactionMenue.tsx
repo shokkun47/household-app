@@ -1,5 +1,3 @@
-// こんいちは
-
 import {
   Box,
   Button,
@@ -14,62 +12,32 @@ import {
   Typography,
 } from "@mui/material";
 import React from "react";
-// import DailySummary from "./DailySummary";
+//アイコン
 import NotesIcon from "@mui/icons-material/Notes";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
-import { Transaction } from "../types";
-import { formatCurrency } from "../utils/formatting";
-// import IconComponents from "./common/IconComponents";
-interface TransactionMenuProps {
-  dailyTransactions: Transaction[];
-  currentDay: string;
-  onAddTransactionForm: () => void;
-  onSelectTransaction: (trnsaction: Transaction) => void;
-  open: boolean;
-  onClose: () => void;
-  isMobile: boolean;
-}
-const TransactionMenu = ({
-  dailyTransactions,
-  currentDay,
-  onAddTransactionForm,
-  onSelectTransaction,
-  open,
-  onClose,
-  isMobile,
-}: TransactionMenuProps) => {
+import FastfoodIcon from "@mui/icons-material/Fastfood";
+import DailySummary from "../DailySummary";
+
+const TransactionMenu = () => {
   const menuDrawerWidth = 320;
   return (
     <Drawer
       sx={{
-        width: isMobile ? "auto" : menuDrawerWidth,
+        width: menuDrawerWidth,
         "& .MuiDrawer-paper": {
-          width: isMobile ? "auto" : menuDrawerWidth,
+          width: menuDrawerWidth,
           boxSizing: "border-box",
           p: 2,
-          ...(isMobile && {
-            height: "80vh",
-            borderTopRightRadius: 8,
-            borderTopLeftRadius: 8,
-          }),
-          ...(!isMobile && {
-            top: 64,
-            height: `calc(100% - 64px)`, // AppBarの高さを引いたビューポートの高さ
-          }),
+          top: 64,
+          height: `calc(100% - 64px)`, // AppBarの高さを引いたビューポートの高さ
         },
       }}
-      variant={isMobile ? "temporary" : "permanent"}
-      anchor={isMobile ? "bottom" : "right"}
-      open={open}
-      onClose={onClose}
+      variant={"permanent"}
+      anchor={"right"}
     >
       <Stack sx={{ height: "100%" }} spacing={2}>
-        {/* 日付 */}
-        <Typography fontWeight={"bold"}>日時： {currentDay}</Typography>
-        {/* <DailySummary
-          dailyTransactions={dailyTransactions}
-          columns={isMobile ? 3 : 2}
-        /> */}
+        <Typography fontWeight={"fontWeightBold"}>日時： 2023-12-31</Typography>
+        <DailySummary />
         {/* 内訳タイトル&内訳追加ボタン */}
         <Box
           sx={{
@@ -85,74 +53,64 @@ const TransactionMenu = ({
             <Typography variant="body1">内訳</Typography>
           </Box>
           {/* 右側の追加ボタン */}
-          <Button
-            startIcon={<AddCircleIcon />}
-            color="primary"
-            onClick={onAddTransactionForm}
-          >
+          <Button startIcon={<AddCircleIcon />} color="primary">
             内訳を追加
           </Button>
         </Box>
-        {/* 取引一覧 */}
         <Box sx={{ flexGrow: 1, overflowY: "auto" }}>
           <List aria-label="取引履歴">
             <Stack spacing={2}>
-              {dailyTransactions.map((transaction) => (
-                <ListItem disablePadding key={transaction.id}>
-                  <Card
-                    sx={{
-                      width: "100%",
-                      backgroundColor:
-                        transaction.type === "income"
-                          ? (theme) => theme.palette.incomeColor.light
-                          : (theme) => theme.palette.expenseColor.light,
-                    }}
-                    onClick={() => onSelectTransaction(transaction)}
-                  >
-                    <CardActionArea>
-                      <CardContent>
-                        <Grid
-                          container
-                          spacing={1}
-                          alignItems="center"
-                          wrap="wrap"
-                        >
-                          <Grid item xs={1}>
-                            {/* icon */}
-                            {/* {IconComponents[transaction.category]} */}
-                          </Grid>
-                          <Grid item xs={2.5}>
-                            <Typography
-                              variant="caption"
-                              display="block"
-                              gutterBottom
-                            >
-                              {transaction.category}
-                            </Typography>
-                          </Grid>
-                          <Grid item xs={4}>
-                            <Typography variant="body2" gutterBottom>
-                              {transaction.content}
-                            </Typography>
-                          </Grid>
-                          <Grid item xs={4.5}>
-                            <Typography
-                              gutterBottom
-                              textAlign={"right"}
-                              color="text.secondary"
-                              sx={{
-                                wordBreak: "break-all",
-                              }}
-                            >
-                              ¥{formatCurrency(transaction.amount)}
-                            </Typography>
-                          </Grid>
+              <ListItem disablePadding>
+                <Card
+                  sx={{
+                    width: "100%",
+                    backgroundColor: (theme) =>
+                      theme.palette.expenseColor.light,
+                  }}
+                >
+                  <CardActionArea>
+                    <CardContent>
+                      <Grid
+                        container
+                        spacing={1}
+                        alignItems="center"
+                        wrap="wrap"
+                      >
+                        <Grid item xs={1}>
+                          {/* icon */}
+                          <FastfoodIcon />
                         </Grid>
-                      </CardContent>
-                    </CardActionArea>
-                  </Card>
-                </ListItem>
-              ))}
+                        <Grid item xs={2.5}>
+                          <Typography
+                            variant="caption"
+                            display="block"
+                            gutterBottom
+                          >
+                            食費
+                          </Typography>
+                        </Grid>
+                        <Grid item xs={4}>
+                          <Typography variant="body2" gutterBottom>
+                            卵
+                          </Typography>
+                        </Grid>
+                        <Grid item xs={4.5}>
+                          <Typography
+                            gutterBottom
+                            textAlign={"right"}
+                            color="text.secondary"
+                            sx={{
+                              wordBreak: "break-all",
+                            }}
+                          >
+                            ¥300
+                          </Typography>
+                        </Grid>
+                      </Grid>
+                    </CardContent>
+                  </CardActionArea>
+                </Card>
+              </ListItem>
             </Stack>
           </List>
         </Box>
