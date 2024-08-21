@@ -12,12 +12,23 @@ interface HomeProps {
   setCurrentMonth: React.Dispatch<React.SetStateAction<Date>>;
 }
 
-const Home = ({monthlyTransactions, setCurrentMonth}: HomeProps) => {
+const Home = ({ monthlyTransactions, setCurrentMonth }: HomeProps) => {
   const today = format(new Date(), "yyyy-MMM-dd");
   const [currentDay, setCurrentDay] = useState(today);
+  const [isEntryDrawerOpen, setisEntryDrawerOpen] = useState(false);
+  // 1日分のデータを取得
   const dailyTransactions = monthlyTransactions.filter((transaction) => {
     return transaction.date === currentDay;
   });
+
+  const closeForm = () => {
+    setisEntryDrawerOpen(!isEntryDrawerOpen);
+  };
+
+  // フォームの開閉処理(
+  const handleAddTransactionForm = () => {
+    setisEntryDrawerOpen(!isEntryDrawerOpen);
+  };
 
   return (
     <Box sx={{display: "flex"}}>
@@ -38,8 +49,13 @@ const Home = ({monthlyTransactions, setCurrentMonth}: HomeProps) => {
         <TransactionMenue 
           dailyTransactions={dailyTransactions}
           currentDay={currentDay}
+          onAddTransactionForm={handleAddTransactionForm}
         />
-        <TransactionForm />
+        <TransactionForm
+          onCloseForm={closeForm}
+          isEntryDrawerOpen={isEntryDrawerOpen}
+          currentDay={currentDay}
+        />
       </Box>
     </Box>
   )
