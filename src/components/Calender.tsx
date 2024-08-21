@@ -10,17 +10,21 @@ import { formatCurrency } from '../utils/formatting'
 import interactionPlugin, { DateClickArg } from '@fullcalendar/interaction';
 
 interface CalenderProps {
-  monthlyTransactions: Transaction[],
+  monthlyTransactions: Transaction[];
   setCurrentMonth: React.Dispatch<React.SetStateAction<Date>>;
+  setCurrentDay: React.Dispatch<React.SetStateAction<string>>;
 }
-const Calender = ({monthlyTransactions,setCurrentMonth}: CalenderProps) => {
+const Calender = ({
+  monthlyTransactions,
+  setCurrentMonth,
+  setCurrentDay,
+}: CalenderProps) => {
   const events = [
     { title: 'Meeting', start: "2024-08-17", income: 500, expense: 200, balance: 300},
     { title: 'aerokn', start: "2024-08-18", income: 300, expense: 200, balance: 100 },
   ]
   
   const dailyBalances = calculateDailyBalances(monthlyTransactions)
-  console.log(dailyBalances)
 
   const createCalenderEvents = (dailyBalances: Record<string,Balance>):CalenderContent[] => {
     return Object.keys(dailyBalances).map((date) => {
@@ -35,7 +39,6 @@ const Calender = ({monthlyTransactions,setCurrentMonth}: CalenderProps) => {
   }
 
   const calenderEvents = createCalenderEvents(dailyBalances);
-  console.log(calenderEvents)
 
   const renderEventContent = (eventInfo: EventContentArg) => {
     return (
@@ -54,12 +57,10 @@ const Calender = ({monthlyTransactions,setCurrentMonth}: CalenderProps) => {
   }
 
   const handleDateSet = (datesetInfo:DatesSetArg) => {
-    console.log(datesetInfo);
     setCurrentMonth(datesetInfo.view.currentStart)
   }
 
   const handleDateClick = (dateInfo: DateClickArg) => {
-    console.log(dateInfo);
     setCurrentDay(dateInfo.dateStr);
   }
   

@@ -13,21 +13,30 @@ interface HomeProps {
 }
 
 const Home = ({monthlyTransactions, setCurrentMonth}: HomeProps) => {
-  const today = format(new Date(), "yyyy-MM-dd");
-  console.log(today);
-  const [currentDay, setCurrentDay] = useState(today); 
+  const today = format(new Date(), "yyyy-MMM-dd");
+  const [currentDay, setCurrentDay] = useState(today);
+  const dailyTransactions = monthlyTransactions.filter((transaction) => {
+    return transaction.date === currentDay;
+  });
 
   return (
     <Box sx={{display: "flex"}}>
       {/* 左側コンテンツ */}
       <Box sx={{flexGrow: 1}}>
         <MonthlySummary monthlyTransactions={monthlyTransactions}/>
-        <Calender monthlyTransactions={monthlyTransactions} setCurrentMonth={setCurrentMonth}/>
+        <Calender
+          monthlyTransactions={monthlyTransactions}
+          setCurrentMonth={setCurrentMonth}
+          setCurrentDay={setCurrentDay}
+        />
       </Box>
 
       {/* 右側コンテンツ */}
       <Box>
-        <TransactionMenue />
+        <TransactionMenue 
+          dailyTransactions={dailyTransactions}
+          currentDay={currentDay}
+        />
         <TransactionForm />
       </Box>
     </Box>

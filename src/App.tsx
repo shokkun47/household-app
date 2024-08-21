@@ -57,8 +57,6 @@ function App() {
     return transaction.date.startsWith(formatMonth(currentMonth))
   })
 
-  console.log(monthlyTransactions);
-
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
