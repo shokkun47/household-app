@@ -8,24 +8,27 @@ import { calculateDailyBalances } from '../utils/finaceCalculations'
 import { Balance, CalenderContent, Transaction } from '../types'
 import { formatCurrency } from '../utils/formatting'
 import interactionPlugin, { DateClickArg } from '@fullcalendar/interaction';
+import { Palette } from '@mui/icons-material'
+import { useTheme } from '@mui/material'
 
 interface CalenderProps {
   monthlyTransactions: Transaction[];
   setCurrentMonth: React.Dispatch<React.SetStateAction<Date>>;
   setCurrentDay: React.Dispatch<React.SetStateAction<string>>;
+  currentDay: string,
 }
 const Calender = ({
   monthlyTransactions,
   setCurrentMonth,
   setCurrentDay,
+  currentDay,
 }: CalenderProps) => {
-  const events = [
-    { title: 'Meeting', start: "2024-08-17", income: 500, expense: 200, balance: 300},
-    { title: 'aerokn', start: "2024-08-18", income: 300, expense: 200, balance: 100 },
-  ]
-  
+  const theme = useTheme()
+
+    // 1.各日付の収支を計算する関数（呼び出し）  
   const dailyBalances = calculateDailyBalances(monthlyTransactions)
 
+  // FullCalender用のイベントを生成する関数
   const createCalenderEvents = (dailyBalances: Record<string,Balance>):CalenderContent[] => {
     return Object.keys(dailyBalances).map((date) => {
       const {income, expense, balance} = dailyBalances[date]
@@ -34,12 +37,25 @@ const Calender = ({
         income: formatCurrency(income), 
         expense: formatCurrency(expense),
         balance: formatCurrency(balance),
-      }
-    })
-  }
+      };
+    });
+  };
 
+  // FullCalender用のイベントを生成する関数はここまで
   const calenderEvents = createCalenderEvents(dailyBalances);
 
+  // const events = [
+  //   { start: "2024-01-10", income: 300, expense: 200, balance: 100},
+  //   { start: "2024-01-10", display: "background", backgroundColor: "red"},
+  // ];
+
+  const backgroundevent = {
+    start: currentDay,
+    display: "background",
+    backgroundColor: theme.palette.incomeColor.light,
+  }
+
+  // カレンダーイベントの見た目を作る関数
   const renderEventContent = (eventInfo: EventContentArg) => {
     return (
       <div>
@@ -70,7 +86,7 @@ const Calender = ({
         locale={jaLocale}
         plugins={[dayGridPlugin, interactionPlugin]}
         initialView='dayGridMonth'
-        events={calenderEvents}
+        events={[...calenderEvents, backgroundevent]}
         eventContent={renderEventContent}
         datesSet={handleDateSet}
         dateClick={handleDateClick}
