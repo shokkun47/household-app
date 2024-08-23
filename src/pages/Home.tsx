@@ -13,7 +13,7 @@ interface HomeProps {
 }
 
 const Home = ({ monthlyTransactions, setCurrentMonth }: HomeProps) => {
-  const today = format(new Date(), "yyyy-MMM-dd");
+  const today = format(new Date(), "yyyy-MM-dd");
   const [currentDay, setCurrentDay] = useState(today);
   const [isEntryDrawerOpen, setisEntryDrawerOpen] = useState(false);
   // 1日分のデータを取得
