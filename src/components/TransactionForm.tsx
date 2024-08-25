@@ -20,15 +20,16 @@ import {
   import WorkIcon from "@mui/icons-material/Work";
   import SavingsIcon from "@mui/icons-material/Savings";
   import AddBusinessIcon from "@mui/icons-material/AddBusiness";
-  import { Controller, useForm } from "react-hook-form";
+  import { Controller, SubmitHandler, useForm } from "react-hook-form";
   import { ExpenseCategory, IncomeCategory } from "../types";
   import { zodResolver } from "@hookform/resolvers/zod";
-import { transactionSchema } from "../validations/schema";
+  import { Schema, transactionSchema } from "../validations/schema";
 
   interface TransactionFormProps {
     onCloseForm: () => void;
     isEntryDrawerOpen: boolean;
     currentDay: string
+    onSaveTransaction: ( transaction: Schema ) => Promise<void>
   }
 
   type IncomeExpense = "income" | "expense";
@@ -41,7 +42,8 @@ import { transactionSchema } from "../validations/schema";
   const TransactionForm = ({
     onCloseForm,
     isEntryDrawerOpen,
-    currentDay
+    currentDay,
+    onSaveTransaction,
   }: TransactionFormProps) => {
     const formWidth = 320;
 
@@ -68,17 +70,16 @@ import { transactionSchema } from "../validations/schema";
       watch, 
       formState:{errors},
       handleSubmit
-    } = useForm({
+    } = useForm<Schema>({
       defaultValues: {
         type: "expense",
         date: currentDay,
         amount: 0,
-        category: "",
+        category: undefined,
         content: "",
       },
       resolver: zodResolver(transactionSchema),
     });
-    console.log(errors);
 
     // 収支タイプを切り替える関数
     const incomeExpenseToggle = (type: IncomeExpense) => {
@@ -97,9 +98,11 @@ import { transactionSchema } from "../validations/schema";
     useEffect(() => {
       setValue("date", currentDay);
     }, [currentDay]);
-    
-    const onSubmit = (data:any) => {
+
+    // 送信処理
+    const onSubmit: SubmitHandler<Schema> = (data) => {
       console.log(data);
+      onSaveTransaction(data);
     };
 
     return (

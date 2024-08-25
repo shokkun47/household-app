@@ -13,11 +13,11 @@ export const transactionSchema = z.object({
         .union([
             z.enum(["食費", "日用品", "住居費", "交際費", "娯楽", "交通費"]),
             z.enum(["給与", "副収入", "お小遣い"]),
-            z.literal(""),
+            z.literal(undefined),
         ])
-        .refine((val) => val !== "", {
+        .refine((val) => val !== undefined, {
             message: "カテゴリを選択してください"
         }),
 });
 
-export type Scheme = z.infer<typeof transactionSchema>
+export type Schema = z.infer<typeof transactionSchema>
