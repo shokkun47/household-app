@@ -59,10 +59,19 @@ function App() {
 
   // 取引を保存する処理
   const handleSaveTransaction = async (transaction: Schema) => {
-    console.log(transaction);
     try {
       // firestoreに保存
       const docRef = await addDoc(collection(db, "Transactions"), transaction);
+
+      const newTransaction = {
+        id: docRef.id,
+        ...transaction,
+      } as Transaction;
+      
+      setTransactions((prevTransaction) => [
+        ...prevTransaction, 
+        newTransaction,
+      ]);
     } catch(err) {
       if (isFireStoreError(err)) {
         console.error("firestoresのエラーは:",err);
