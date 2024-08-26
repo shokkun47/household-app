@@ -1,4 +1,4 @@
-import {
+  import {
     Box,
     Button,
     ButtonGroup,
@@ -31,6 +31,8 @@ import {
     currentDay: string;
     onSaveTransaction: ( transaction: Schema ) => Promise<void>;
     selectedTransaction: Transaction | null;
+    onDeleteTransaction: (transactionId: string) => Promise<void>;
+    closeForm: () => void
   }
 
   type IncomeExpense = "income" | "expense";
@@ -46,6 +48,8 @@ import {
     currentDay,
     onSaveTransaction,
     selectedTransaction,
+    onDeleteTransaction,
+    closeForm,
   }: TransactionFormProps) => {
     const formWidth = 320;
 
@@ -119,6 +123,7 @@ import {
       });
     };
 
+    // フォーム内容を更新
     useEffect(() => {
       if(selectedTransaction) {
         setValue("type", selectedTransaction.type);
@@ -136,6 +141,13 @@ import {
         })
       }
     }, [selectedTransaction]);
+
+    const handleDelete = () => {
+      if (selectedTransaction) {
+        onDeleteTransaction(selectedTransaction.id);
+        closeForm();
+      }
+    };
 
     return (
       <Box
@@ -279,6 +291,17 @@ import {
             >
               保存
             </Button>
+
+            {selectedTransaction && (
+              <Button
+                onClick={handleDelete}
+                variant="outlined" 
+                color={"secondary"}
+                fullWidth
+              >
+                削除
+              </Button>
+            )}
           </Stack>
         </Box>
       </Box>

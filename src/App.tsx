@@ -9,7 +9,7 @@ import { theme } from './theme/theme';
 import { ThemeProvider } from '@emotion/react';
 import { CssBaseline } from '@mui/material';
 import { Transaction } from './types/index';
-import { addDoc, collection, getDocs } from 'firebase/firestore';
+import { addDoc, collection, deleteDoc, doc, getDocs } from 'firebase/firestore';
 import { db } from './firerbase';
 import { formatMonth } from './utils/formatting';
 import { Schema } from './validations/schema';
@@ -23,10 +23,6 @@ function App() {
 
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [currentMonth, setCurrentMonth] = useState(new Date());
-  const [selectedTransaction, setSelectedTransaction] = 
-    useState<Transaction | null>(null);
-
-  // const a = format(currentMonth, "yyyy-MM");
 
   // firestoreのデータをすべて取得
   useEffect(() => {
@@ -51,7 +47,6 @@ function App() {
       }  
     }
     fetchTransactions();
-
   }, [])
 
   // ひと月分のデータのみ取得
@@ -83,6 +78,24 @@ function App() {
     }
   };
 
+  const handleDeleteTransaction = async (transactionId: string) => {
+    // firebaseのデータを削除
+    try {
+      // firestoreのデータを削除
+      await deleteDoc(doc(db, "Transactions", transactionId));
+      const fiteredTransactions = transactions.filter(
+        (transaction) => transaction.id !== transactionId
+      );
+      setTransactions(fiteredTransactions);
+    } catch(err) {
+      if (isFireStoreError(err)) {
+        console.error("firestoresのエラーは:",err);
+      } else {
+        console.error("一般的なエラーは:",err);
+      }
+    }
+  }
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -96,8 +109,7 @@ function App() {
                   monthlyTransactions={monthlyTransactions} 
                   setCurrentMonth={setCurrentMonth}
                   onSaveTransaction={handleSaveTransaction}
-                  selectedTransaction={selectedTransaction}
-                  setSelectedTransaction={setSelectedTransaction}
+                  onDeleteTransaction={handleDeleteTransaction}
                 />
               }
             />
