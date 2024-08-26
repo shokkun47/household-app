@@ -23,16 +23,17 @@
   import { Controller, SubmitHandler, useForm } from "react-hook-form";
   import { ExpenseCategory, IncomeCategory, Transaction } from "../types";
   import { zodResolver } from "@hookform/resolvers/zod";
-  import { Schema, transactionSchema } from "../validations/schema";
+  import { Scheme, transactionSchema } from "../validations/schema";
 
   interface TransactionFormProps {
     onCloseForm: () => void;
     isEntryDrawerOpen: boolean;
     currentDay: string;
-    onSaveTransaction: ( transaction: Schema ) => Promise<void>;
+    onSaveTransaction: ( transaction: Scheme ) => Promise<void>;
     selectedTransaction: Transaction | null;
     onDeleteTransaction: (transactionId: string) => Promise<void>;
-    closeForm: () => void
+    onUpdateTransaction: (transaction: Scheme, transactionId: string) => Promise<void>;
+    closeForm: () => void;
   }
 
   type IncomeExpense = "income" | "expense";
@@ -50,6 +51,7 @@
     selectedTransaction,
     onDeleteTransaction,
     closeForm,
+    onUpdateTransaction,
   }: TransactionFormProps) => {
     const formWidth = 320;
 
@@ -77,14 +79,14 @@
       formState:{errors},
       handleSubmit,
       reset,
-    } = useForm<Schema>({
+    } = useForm<Scheme> ({
       defaultValues: {
         type: "expense",
         date: currentDay,
         amount: 0,
-        category: "",
+        category: "",  
         content: "",
-      },
+    },
       resolver: zodResolver(transactionSchema),
     });
 
@@ -99,6 +101,7 @@
     // 収支タイプを監視
     const currentType = watch ("type");
 
+    // 収支タイプに応じたカテゴリを取得
     useEffect(() => {
       const newCategories = 
         currentType === "expense" ? expenseCategories : incomeCategories;
@@ -110,9 +113,26 @@
     }, [currentDay]);
 
     // 送信処理
-    const onSubmit: SubmitHandler<Schema> = (data) => {
-      console.log(data);
-      onSaveTransaction(data);
+    const onSubmit: SubmitHandler<Scheme> = (data) => {
+      if(selectedTransaction) {
+        // 更新処理
+        onUpdateTransaction(data, selectedTransaction.id)
+        .then(() => {
+          closeForm();
+        })
+        .catch((error) => {
+          console.error(error);
+        })
+      } else {
+        // 保存処理
+        onSaveTransaction(data)
+        .then(() => {
+          closeForm();
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+      };
 
       reset({
         type: "expense",
@@ -123,13 +143,22 @@
       });
     };
 
+    // 選択肢が更新されたか確認
+    useEffect(() => {
+      if (selectedTransaction) {
+        const categoryExists = categories.some(
+          (category) => category.label === selectedTransaction.category
+        );
+        setValue("category", categoryExists ? selectedTransaction.category : "");
+      }
+    }, [selectedTransaction, categories])
+
     // フォーム内容を更新
     useEffect(() => {
       if(selectedTransaction) {
         setValue("type", selectedTransaction.type);
         setValue("date", selectedTransaction.date);
         setValue("amount", selectedTransaction.amount);
-        setValue("category", selectedTransaction.category);
         setValue("content", selectedTransaction.content);
       } else {
         reset({
@@ -289,7 +318,7 @@
               color={currentType === "income" ? "primary" : "error"}
               fullWidth
             >
-              保存
+              {selectedTransaction ? "更新" : "保存"}
             </Button>
 
             {selectedTransaction && (

@@ -9,10 +9,10 @@ import { theme } from './theme/theme';
 import { ThemeProvider } from '@emotion/react';
 import { CssBaseline } from '@mui/material';
 import { Transaction } from './types/index';
-import { addDoc, collection, deleteDoc, doc, getDocs } from 'firebase/firestore';
+import { addDoc, collection, deleteDoc, doc, getDocs, updateDoc } from 'firebase/firestore';
 import { db } from './firerbase';
 import { formatMonth } from './utils/formatting';
-import { Schema } from './validations/schema';
+import { Scheme } from './validations/schema';
 
 function App() {
 
@@ -55,7 +55,7 @@ function App() {
   })
 
   // 取引を保存する処理
-  const handleSaveTransaction = async (transaction: Schema) => {
+  const handleSaveTransaction = async (transaction: Scheme) => {
     try {
       // firestoreに保存
       const docRef = await addDoc(collection(db, "Transactions"), transaction);
@@ -78,8 +78,8 @@ function App() {
     }
   };
 
-  const handleDeleteTransaction = async (transactionId: string) => {
     // firebaseのデータを削除
+  const handleDeleteTransaction = async (transactionId: string) => {
     try {
       // firestoreのデータを削除
       await deleteDoc(doc(db, "Transactions", transactionId));
@@ -87,6 +87,28 @@ function App() {
         (transaction) => transaction.id !== transactionId
       );
       setTransactions(fiteredTransactions);
+    } catch(err) {
+      if (isFireStoreError(err)) {
+        console.error("firestoresのエラーは:",err);
+      } else {
+        console.error("一般的なエラーは:",err);
+      }
+    }
+  }
+
+  // firebaseの更新処理
+  const handleUpdateTransaction = async (
+    transaction: Scheme,
+    transactionId: string,
+  ) => {
+    try {
+      const docRef = doc(db, "Transactions", transactionId);
+      await updateDoc(docRef, transaction);
+
+      const updatedTransactions = transactions.map((t) => 
+        t.id === transactionId ? { ...t, ...transaction } : t
+      ) as Transaction[];
+      setTransactions(updatedTransactions);
     } catch(err) {
       if (isFireStoreError(err)) {
         console.error("firestoresのエラーは:",err);
@@ -110,6 +132,7 @@ function App() {
                   setCurrentMonth={setCurrentMonth}
                   onSaveTransaction={handleSaveTransaction}
                   onDeleteTransaction={handleDeleteTransaction}
+                  onUpdateTransaction={handleUpdateTransaction}
                 />
               }
             />

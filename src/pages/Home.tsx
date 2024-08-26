@@ -6,13 +6,14 @@ import TransactionMenue from '../components/TransactionMenue'
 import TransactionForm from '../components/TransactionForm'
 import { Transaction } from '../types'
 import { format } from 'date-fns'
-import { Schema } from '../validations/schema'
+import { Scheme } from '../validations/schema'
 
 interface HomeProps {
   monthlyTransactions: Transaction[],
   setCurrentMonth: React.Dispatch<React.SetStateAction<Date>>;
-  onSaveTransaction: (transaction: Schema) => Promise<void>;
+  onSaveTransaction: (transaction: Scheme) => Promise<void>;
   onDeleteTransaction: (transactionId: string) => Promise<void>;
+  onUpdateTransaction: (transaction: Scheme, transactionId: string) => Promise<void>;
 }
 
 const Home = ({ 
@@ -20,6 +21,7 @@ const Home = ({
   setCurrentMonth,
   onSaveTransaction,
   onDeleteTransaction,
+  onUpdateTransaction,
 }: HomeProps) => {
   const today = format(new Date(), "yyyy-MM-dd");
   const [currentDay, setCurrentDay] = useState(today);
@@ -82,6 +84,7 @@ const Home = ({
           selectedTransaction={selectedTransaction}
           onDeleteTransaction={onDeleteTransaction}
           closeForm={closeForm}
+          onUpdateTransaction={onUpdateTransaction}
         />
       </Box>
     </Box>
