@@ -1,10 +1,22 @@
+import { Grid } from '@mui/material'
 import React from 'react'
 
 function Report() {
   return (
-    <div>
-      report
-    </div>
+    <Grid container spacing={12}>
+      <Grid item xs={12}>
+        日付
+      </Grid>
+      <Grid item xs={12} md={4}>
+        カテゴリグラフ
+      </Grid>
+      <Grid item xs={12} md={8}>
+        棒グラフ
+      </Grid>
+      <Grid item xs={12}>
+        テーブル
+      </Grid>
+    </Grid>
   )
 }
 
