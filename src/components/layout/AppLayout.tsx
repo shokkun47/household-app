@@ -48,7 +48,7 @@ export default function AppLayout() {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap component="div">
-            TypeScript × React 家計簿
+            React × TypeScript 家計簿
           </Typography>
         </Toolbar>
       </AppBar>
