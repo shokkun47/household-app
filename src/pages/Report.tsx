@@ -3,7 +3,7 @@ import React from 'react'
 
 function Report() {
   return (
-    <Grid container spacing={12}>
+    <Grid container spacing={2}>
       <Grid item xs={12}>
         日付
       </Grid>
