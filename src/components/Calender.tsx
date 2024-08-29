@@ -25,10 +25,9 @@ const Calender = ({
   currentDay,
   today
 }: CalenderProps) => {
-  const theme = useTheme()
-
-    // 1.各日付の収支を計算する関数（呼び出し）  
-  const dailyBalances = calculateDailyBalances(monthlyTransactions)
+  const theme = useTheme();
+  // 1.各日付の収支を計算する関数（呼び出し）  
+  const dailyBalances = calculateDailyBalances(monthlyTransactions);
 
   // FullCalender用のイベントを生成する関数
   const createCalenderEvents = (dailyBalances: Record<string,Balance>):CalenderContent[] => {
