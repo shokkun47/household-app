@@ -10,15 +10,17 @@ interface ReportProps {
   currentMonth: Date;
   setCurrentMonth: React.Dispatch<React.SetStateAction<Date>>;
   monthlyTransactions: Transaction[];
+  isLoading: boolean;
 }
 
 const  Report = ({ 
   currentMonth, 
   setCurrentMonth,
   monthlyTransactions,
+  isLoading,
 }: ReportProps) => {
   const commonPaperStyle = {
-    height: { xs: "auto", md: "400px" },
+    height: "400px",
     display: "flex",
     flexDirection: "column",
     p: 2,
@@ -44,7 +46,9 @@ const  Report = ({
         <Paper sx={commonPaperStyle}>
           {/* 棒グラフ */}
         <BarChart  
-          monthlyTransactions={monthlyTransactions}/>
+          monthlyTransactions={monthlyTransactions}
+          isLoading={isLoading}
+        />
         </Paper>
       </Grid>
 

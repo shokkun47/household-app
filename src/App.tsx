@@ -15,15 +15,14 @@ import { formatMonth } from './utils/formatting';
 import { Scheme } from './validations/schema';
 
 function App() {
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [currentMonth, setCurrentMonth] = useState(new Date());
+  const [isLoading, setIsloading] = useState(true);
 
   // Firebaseエラーかどうかを判定する型ガード
   function isFireStoreError(err: unknown): err is {code: string, message: string} {
     return typeof err === "object" && err !== null && "code" in err
   }
-
-  const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [currentMonth, setCurrentMonth] = useState(new Date());
-
   // firestoreのデータをすべて取得
   useEffect(() => {
     const fetchTransactions = async() => {
@@ -43,11 +42,12 @@ function App() {
         } else {
           console.error("一般的なエラーは:",err);
         }
-        // error
-      }  
-    }
+      } finally {
+        setIsloading(false);
+      }
+    };
     fetchTransactions();
-  }, [])
+  }, []);
 
   // ひと月分のデータのみ取得
   const monthlyTransactions = transactions.filter((transaction) => {
@@ -142,7 +142,8 @@ function App() {
                 <Report 
                   currentMonth={currentMonth}
                   setCurrentMonth={setCurrentMonth}
-                  monthlyTransactions={monthlyTransactions} 
+                  monthlyTransactions={monthlyTransactions}
+                  isLoading={isLoading}
                 />
               } 
             />
