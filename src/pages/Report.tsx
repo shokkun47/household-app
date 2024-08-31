@@ -38,7 +38,10 @@ const  Report = ({
       <Grid item xs={12} md={4}>
         <Paper sx={commonPaperStyle}>
           {/* 円グラフ */}
-          <CategoryChart />
+          <CategoryChart
+            monthlyTransactions={monthlyTransactions}
+            isLoading={isLoading}
+          />
         </Paper>
       </Grid>
 
