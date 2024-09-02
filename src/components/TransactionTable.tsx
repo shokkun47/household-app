@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { alpha } from '@mui/material/styles';
+import { alpha, useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -22,6 +22,9 @@ import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
 import { Transaction } from '../types';
 import { finaceCalculations } from '../utils/finaceCalculations';
+import { Grid } from '@mui/material';
+import { ColorizeOutlined } from '@mui/icons-material';
+import { formatCurrency } from '../utils/formatting';
 
 interface Data {
   id: number;
@@ -102,7 +105,7 @@ const headCells: readonly HeadCell[] = [
     id: 'name',
     numeric: false,
     disablePadding: true,
-    label: 'Dessert (100g serving)',
+    label: 'Dessert (100g serving)',
   },
   {
     id: 'calories',
@@ -114,19 +117,19 @@ const headCells: readonly HeadCell[] = [
     id: 'fat',
     numeric: true,
     disablePadding: false,
-    label: 'Fat (g)',
+    label: 'Fat (g)',
   },
   {
     id: 'carbs',
     numeric: true,
     disablePadding: false,
-    label: 'Carbs (g)',
+    label: 'Carbs (g)',
   },
   {
     id: 'protein',
     numeric: true,
     disablePadding: false,
-    label: 'Protein (g)',
+    label: 'Protein (g)',
   },
 ];
 
@@ -244,6 +247,34 @@ function TransactionTableToolbar(props: TransactionTableToolbarProps) {
   );
 }
 
+interface FinancialItemProps {
+  title: string,
+  value: number,
+  color: string,
+}
+
+// 収支表示コンポーネント
+function FinancialItem({title, value, color}: FinancialItemProps) {
+  return (
+    <Grid item xs={4} textAlign={"center"}>
+      <Typography variant="subtitle1" component={"div"}>
+        {title}
+      </Typography>
+      <Typography
+      component={"span"}
+        fontWeight={"fontWeightBold"}
+        sx={{
+          color: color,
+          fontSize: { xs: ".8rem", sm: "1rem", md: "1.2rem" },
+          wordBreak: "break-word",
+        }}
+      >
+        ￥{formatCurrency(value)}
+      </Typography>
+    </Grid>
+  );
+}
+
 interface TransactionTableProps {
   monthlyTransactions: Transaction[],
 }
@@ -252,6 +283,7 @@ interface TransactionTableProps {
 export default function TransactionTable({
   monthlyTransactions,
 }: TransactionTableProps) {
+  const theme = useTheme();
   const [order, setOrder] = React.useState<Order>('asc');
   const [orderBy, setOrderBy] = React.useState<keyof Data>('calories');
   const [selected, setSelected] = React.useState<readonly number[]>([]);
@@ -328,6 +360,28 @@ export default function TransactionTable({
   return (
     <Box sx={{ width: '100%' }}>
       <Paper sx={{ width: '100%', mb: 2 }}>
+
+      {/* 収支表示エリア */}
+      <Grid
+        container
+        sx={{ borderBottom: "1px solid rgba(224, 224, 224,1)" }}
+      >
+        <FinancialItem
+          title={"収入"}
+          value={income}
+          color={theme.palette.incomeColor.main}
+        />
+        <FinancialItem
+          title={"支出"}
+          value={expense}
+          color={theme.palette.expenseColor.main}
+        />
+        <FinancialItem
+          title={"残高"}
+          value={balance}
+          color={theme.palette.balanceColor.main}
+        />
+      </Grid>
         {/* ツールバー */}
         <TransactionTableToolbar numSelected={selected.length} />
 
