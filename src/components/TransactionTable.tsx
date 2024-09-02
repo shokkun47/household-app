@@ -20,6 +20,8 @@ import Switch from '@mui/material/Switch';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
+import { Transaction } from '../types';
+import { finaceCalculations } from '../utils/finaceCalculations';
 
 interface Data {
   id: number;
@@ -128,7 +130,7 @@ const headCells: readonly HeadCell[] = [
   },
 ];
 
-interface EnhancedTableProps {
+interface TransactionTableHeadProps {
   numSelected: number;
   onRequestSort: (event: React.MouseEvent<unknown>, property: keyof Data) => void;
   onSelectAllClick: (event: React.ChangeEvent<HTMLInputElement>) => void;
@@ -137,7 +139,8 @@ interface EnhancedTableProps {
   rowCount: number;
 }
 
-function EnhancedTableHead(props: EnhancedTableProps) {
+// テーブルヘッド
+function TransactionTableHead(props: TransactionTableHeadProps) {
   const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } =
     props;
   const createSortHandler =
@@ -184,10 +187,13 @@ function EnhancedTableHead(props: EnhancedTableProps) {
     </TableHead>
   );
 }
-interface EnhancedTableToolbarProps {
+
+interface TransactionTableToolbarProps {
   numSelected: number;
 }
-function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
+
+// ツールバー
+function TransactionTableToolbar(props: TransactionTableToolbarProps) {
   const { numSelected } = props;
   return (
     <Toolbar
@@ -237,7 +243,15 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
     </Toolbar>
   );
 }
-export default function EnhancedTable() {
+
+interface TransactionTableProps {
+  monthlyTransactions: Transaction[],
+}
+
+// 本体
+export default function TransactionTable({
+  monthlyTransactions,
+}: TransactionTableProps) {
   const [order, setOrder] = React.useState<Order>('asc');
   const [orderBy, setOrderBy] = React.useState<keyof Data>('calories');
   const [selected, setSelected] = React.useState<readonly number[]>([]);
@@ -309,17 +323,22 @@ export default function EnhancedTable() {
     [order, orderBy, page, rowsPerPage],
   );
 
+  const {income, expense, balance} = finaceCalculations(monthlyTransactions)
+
   return (
     <Box sx={{ width: '100%' }}>
       <Paper sx={{ width: '100%', mb: 2 }}>
-        <EnhancedTableToolbar numSelected={selected.length} />
+        {/* ツールバー */}
+        <TransactionTableToolbar numSelected={selected.length} />
+
+        {/* 取引一覧 */}
         <TableContainer>
           <Table
             sx={{ minWidth: 750 }}
             aria-labelledby="tableTitle"
             size={dense ? 'small' : 'medium'}
           >
-            <EnhancedTableHead
+            <TransactionTableHead
               numSelected={selected.length}
               order={order}
               orderBy={orderBy}
@@ -379,6 +398,8 @@ export default function EnhancedTable() {
             </TableBody>
           </Table>
         </TableContainer>
+
+        {/* テーブル下部 */}
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
@@ -389,10 +410,10 @@ export default function EnhancedTable() {
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </Paper>
-      <FormControlLabel
+      {/* <FormControlLabel
         control={<Switch checked={dense} onChange={handleChangeDense} />}
         label="Dense padding"
-      />
+      /> */}
     </Box>
   );
 }

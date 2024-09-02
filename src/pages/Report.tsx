@@ -57,7 +57,9 @@ const  Report = ({
 
       <Grid item xs={12}>
         {/* テーブル */}
-        <TransactionTable />
+        <TransactionTable 
+          monthlyTransactions={monthlyTransactions}
+        />
       </Grid>
     </Grid>
   )
