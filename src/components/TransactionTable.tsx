@@ -140,7 +140,7 @@ function FinancialItem({title, value, color}: FinancialItemProps) {
 
 interface TransactionTableProps {
   monthlyTransactions: Transaction[],
-  onDeleteTransaction: (transactionId: string) => Promise<void>,
+  onDeleteTransaction: (transactionId: string | readonly string[]) => Promise<void>,
 }
 
 // 本体

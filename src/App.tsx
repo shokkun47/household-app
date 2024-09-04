@@ -79,12 +79,21 @@ function App() {
   };
 
     // firebaseのデータを削除
-  const handleDeleteTransaction = async (transactionId: string) => {
+  const handleDeleteTransaction = async (
+    transactionIds : string | readonly string[]
+  ) => {
     try {
-      // firestoreのデータを削除
-      await deleteDoc(doc(db, "Transactions", transactionId));
+      const idsTodelete = Array.isArray(transactionIds) 
+        ? transactionIds
+        : [transactionIds];
+
+      for (const id of idsTodelete) {
+        // firestoreのデータを削除
+        await deleteDoc(doc(db, "Transactions", id));
+
+      }
       const fiteredTransactions = transactions.filter(
-        (transaction) => transaction.id !== transactionId
+        (transaction) => !idsTodelete.includes(transaction.id)
       );
       setTransactions(fiteredTransactions);
     } catch(err) {
