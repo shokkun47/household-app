@@ -144,8 +144,14 @@ interface TransactionTableHeadProps {
 
 // テーブルヘッド
 function TransactionTableHead(props: TransactionTableHeadProps) {
-  const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } =
-    props;
+  const { 
+    onSelectAllClick, 
+    order, 
+    orderBy, 
+    numSelected, 
+    rowCount, 
+    onRequestSort
+} = props;
   const createSortHandler =
     (property: keyof Data) => (event: React.MouseEvent<unknown>) => {
       onRequestSort(event, property);
@@ -165,7 +171,7 @@ function TransactionTableHead(props: TransactionTableHeadProps) {
             }}
           />
         </TableCell>
-        {headCells.map((headCell) => (
+        {/* {headCells.map((headCell) => (
           <TableCell
             key={headCell.id}
             align={headCell.numeric ? 'right' : 'left'}
@@ -185,7 +191,12 @@ function TransactionTableHead(props: TransactionTableHeadProps) {
               ) : null}
             </TableSortLabel>
           </TableCell>
-        ))}
+        ))} */}
+
+        <TableCell align={"left"}>日付</TableCell>
+        <TableCell align={"left"}>カテゴリ</TableCell>
+        <TableCell align={"left"}>金額</TableCell>
+        <TableCell align={"left"}>内容</TableCell>
       </TableRow>
     </TableHead>
   );
@@ -227,19 +238,13 @@ function TransactionTableToolbar(props: TransactionTableToolbarProps) {
           id="tableTitle"
           component="div"
         >
-          Nutrition
+          月の収支
         </Typography>
       )}
-      {numSelected > 0 ? (
+      {numSelected > 0 && (
         <Tooltip title="Delete">
           <IconButton>
             <DeleteIcon />
-          </IconButton>
-        </Tooltip>
-      ) : (
-        <Tooltip title="Filter list">
-          <IconButton>
-            <FilterListIcon />
           </IconButton>
         </Tooltip>
       )}
@@ -392,6 +397,7 @@ export default function TransactionTable({
             aria-labelledby="tableTitle"
             size={dense ? 'small' : 'medium'}
           >
+            {/* テーブルヘッド */}
             <TransactionTableHead
               numSelected={selected.length}
               order={order}
@@ -399,6 +405,7 @@ export default function TransactionTable({
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
               rowCount={rows.length}
+              // rowCount={monthlyTransactions.length}
             />
             <TableBody>
               {visibleRows.map((row, index) => {
