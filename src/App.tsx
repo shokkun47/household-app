@@ -144,6 +144,7 @@ function App() {
                   setCurrentMonth={setCurrentMonth}
                   monthlyTransactions={monthlyTransactions}
                   isLoading={isLoading}
+                  onDeleteTransaction={handleDeleteTransaction}
                 />
               } 
             />
