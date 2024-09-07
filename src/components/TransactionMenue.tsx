@@ -26,6 +26,8 @@ interface TransactionMenuProps {
   onAddTransactionForm: () => void;
   onSelectTransaction: (transaction: Transaction) => void;
   isMobile: boolean;
+  open: boolean;
+  onClose: () => void;
 }
 
 const TransactionMenu = ({
@@ -34,6 +36,8 @@ const TransactionMenu = ({
   onAddTransactionForm,
   onSelectTransaction,
   isMobile,
+  open,
+  onClose,
 }: TransactionMenuProps) => {
   const menuDrawerWidth = 320;
   return (
@@ -57,7 +61,11 @@ const TransactionMenu = ({
       }}
       variant={isMobile ? "temporary" : "permanent"}
       anchor={isMobile ? "bottom" : "right"}
-      open={true}
+      open={open}
+      onClose={onClose}
+      ModalProps={{
+        keepMounted: true, // Better open performance on mobile.
+      }}    
     >
       <Stack sx={{ height: "100%" }} spacing={2}>
         {/* 日付 */}

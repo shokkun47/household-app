@@ -17,13 +17,15 @@ interface CalenderProps {
   setCurrentDay: React.Dispatch<React.SetStateAction<string>>;
   currentDay: string;
   today: string;
+  onDateClick: (dateInfo: DateClickArg) => void;
 }
 const Calender = ({
   monthlyTransactions,
   setCurrentMonth,
   setCurrentDay,
   currentDay,
-  today
+  today,
+  onDateClick,
 }: CalenderProps) => {
   const theme = useTheme();
   // 1.各日付の収支を計算する関数（呼び出し）  
@@ -82,11 +84,6 @@ const Calender = ({
       setCurrentDay(today);
     }
   };
-
-  // 日付を選択したときの処理
-  const handleDateClick = (dateInfo: DateClickArg) => {
-    setCurrentDay(dateInfo.dateStr);
-  }
   
   return (
     <div>
@@ -97,7 +94,7 @@ const Calender = ({
         events={[...calenderEvents, backgroundevent]}
         eventContent={renderEventContent}
         datesSet={handleDateSet}
-        dateClick={handleDateClick}
+        dateClick={onDateClick}
       />
     </div>
   )
