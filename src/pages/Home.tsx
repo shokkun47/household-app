@@ -29,7 +29,8 @@ const Home = ({
   const [isEntryDrawerOpen, setIsEntryDrawerOpen] = useState(false);
   const [selectedTransaction, setSelectedTransaction] = 
     useState<Transaction | null>(null);
-  const[isMobileDrawerOepn, setIsMobileDrawerOpen] = useState(false);
+  const [isMobileDrawerOepn, setIsMobileDrawerOpen] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("lg"));
@@ -40,16 +41,25 @@ const Home = ({
   });
 
   const closeForm = () => {
-    setIsEntryDrawerOpen(!isEntryDrawerOpen);
     setSelectedTransaction(null);
+
+    if (isMobile) {
+      setIsDialogOpen(!isDialogOpen)
+    } else {
+      setIsEntryDrawerOpen(!isEntryDrawerOpen);
+    }
   };
 
   // フォームの開閉処理（内訳追加ボタンを押したとき）
   const handleAddTransactionForm = () => {
-    if (selectedTransaction) {
-      setSelectedTransaction(null);
+    if (isMobile) {
+      setIsDialogOpen(true);
     } else {
-      setIsEntryDrawerOpen(!isEntryDrawerOpen);
+      if (selectedTransaction) {
+        setSelectedTransaction(null);
+      } else {
+        setIsEntryDrawerOpen(!isEntryDrawerOpen);
+      }
     }
   };
 
@@ -60,8 +70,12 @@ const Home = ({
 
   // 取引が選択されたときの処理
   const handleSelectTransaction = (transaction: Transaction) => {
-    setIsEntryDrawerOpen(true);
-    setSelectedTransaction(transaction);
+    setSelectedTransaction(transaction);  
+    if (isMobile) {
+      setIsDialogOpen(true);
+    } else {
+      setIsEntryDrawerOpen(true);
+    }
   };
 
   // 日付を選択したときの処理
@@ -104,8 +118,11 @@ const Home = ({
           onSaveTransaction={onSaveTransaction}
           selectedTransaction={selectedTransaction}
           onDeleteTransaction={onDeleteTransaction}
-          closeForm={closeForm}
+          setSelectedTransaction={setSelectedTransaction}
           onUpdateTransaction={onUpdateTransaction}
+          isMobile={isMobile}
+          closeForm={closeForm}
+          isDialogOpen={isDialogOpen}
         />
       </Box>
     </Box>

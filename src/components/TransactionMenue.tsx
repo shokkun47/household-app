@@ -71,7 +71,10 @@ const TransactionMenu = ({
         {/* 日付 */}
         <Typography fontWeight={"fontWeightBold"}>日時： {currentDay}</Typography>
 
-        <DailySummary dailyTransactions={dailyTransactions}/>
+        <DailySummary 
+          dailyTransactions={dailyTransactions}
+          columns={isMobile ? 3 : 2}
+        />
         {/* 内訳タイトル&内訳追加ボタン */}
         <Box
           sx={{
